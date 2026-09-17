@@ -13,3 +13,7 @@ Notes entered near the end of the loop stop at the loop boundary. A two-beat not
 Lines are quantized to 32 positions around the loop and notes in the chosen scale. Sound is synthesized on this computer with Web Audio. The playback line follows audio time. There are no samples to download.
 
 `music.js` contains the synth and sequencer. `app.js` handles drawing and controls; `index.html` and `style.css` define the page. `music.js` also exports its pure score compiler and WAV encoder for use in Node.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
