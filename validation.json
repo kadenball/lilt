@@ -1,0 +1,31 @@
+{
+  "result": "PASS",
+  "liveAudio": {
+    "context": "running",
+    "peak": 0.023804055526852608,
+    "rms": 0.00752231757878997
+  },
+  "exportedAudio": {
+    "channels": 2,
+    "sampleRate": 48000,
+    "duration": 11.828583333333333,
+    "peak": 0.0792236328125,
+    "rms": 0.01903284742398452,
+    "clipped": 0
+  },
+  "browserErrors": [],
+  "checks": [
+    "no audio before interaction",
+    "live audible signal",
+    "WAV duration and signal/no clipping",
+    "play/pause",
+    "pointer drawing",
+    "undo/clear",
+    "voice/scale/tempo/volume",
+    "keyboard note entry",
+    "12-line limit",
+    "guide",
+    "desktop/mobile layout",
+    "offline opening"
+  ]
+}

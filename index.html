@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f2eb">
+  <title>Lilt — a place to draw a little music</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="music.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="masthead">
+    <a class="wordmark" href="./index.html" aria-label="Lilt home"><svg width="33" height="36" viewBox="0 0 33 36" fill="none" aria-hidden="true"><path d="M7 26C1 21 5 7 14 6C24 5 10 34 20 30C28 27 30 17 25 15C21 13 13 22 7 26Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg><span>lilt</span></a>
+    <span class="masthead-note">A SMALL INSTRUMENT FOR WANDERING HANDS</span>
+    <button class="quiet-button" id="guide-toggle" aria-expanded="false" aria-controls="guide">How to play <span aria-hidden="true">↗</span></button>
+  </header>
+  <main>
+    <section class="intro"><div><p class="eyebrow">NO WRONG NOTES. JUST A PLACE TO START.</p><h1>Draw a line.<br><em>Let it sing.</em></h1></div><div class="intro-note"><span class="note-scribble" aria-hidden="true">♪</span><p>A little melody is already waiting.<br>Press play, then make it your own.</p></div></section>
+    <section class="guide" id="guide" hidden><p><strong>Across is time.</strong> Draw from left to right to place notes around an eight-beat loop. Drawing a line backward works too.</p><p><strong>Up is higher.</strong> Your lines become notes in the selected scale. A flat line holds a note. Overlapping lines make chords.</p><p><strong>Make room to listen.</strong> Start with the sketch below or choose Clear. Use Add a note for keyboard access. Sound begins only when you interact.</p></section>
+    <section class="instrument" aria-label="Drawing instrument">
+      <div class="score-header"><div class="score-name"><span class="status-dot" id="status-dot"></span><span id="status-label">READY WHEN YOU ARE</span></div><div class="score-meta"><span id="stroke-count">3 / 12 LINES</span><span class="meta-divider"></span><span id="loop-length">5.7 SECOND LOOP</span></div></div>
+      <div class="drawing-area" id="drawing-area">
+        <canvas id="score" width="1200" height="480" tabindex="0" aria-label="Musical drawing canvas. Draw with a mouse or finger. Alternatively use the Add a note controls below. Press Space to play or pause; Backspace undoes the last line.">Use the Add a note controls below to compose without drawing.</canvas>
+        <div class="pitch-hint" aria-hidden="true">HIGHER NOTES ↑</div>
+        <div class="time-hint" aria-hidden="true">TIME MOVES THIS WAY <span>→</span></div>
+        <div class="empty-state" id="empty-state" hidden><span class="empty-scribble" aria-hidden="true">∿</span><p>Your first line is the beginning.</p><span>Draw anywhere in the paper.</span></div>
+      </div>
+      <div class="transport"><div class="play-group"><button class="play-button" id="play" aria-pressed="false"><span id="play-symbol" aria-hidden="true">▶</span><span id="play-label">Listen</span></button><span class="play-explanation" id="play-explanation">Your sketch, on repeat.</span></div><div class="edit-controls"><button class="quiet-button" id="undo"><span aria-hidden="true">↶</span> Undo</button><button class="quiet-button" id="clear">Clear</button><button class="quiet-button" id="demo">New melody <span aria-hidden="true">↗</span></button></div></div>
+    </section>
+    <section class="controls" aria-label="Sound controls">
+      <div class="control-panel voices"><p class="control-title">01 <span>A COLOR FOR YOUR SOUND</span></p><div class="voice-options" role="group" aria-label="Instrument voice"><button class="voice selected" data-voice="glass" aria-pressed="true"><span class="voice-icon glass-icon" aria-hidden="true">◇</span><span>Glass<small>Clear & shimmering</small></span></button><button class="voice" data-voice="warm" aria-pressed="false"><span class="voice-icon warm-icon" aria-hidden="true">◌</span><span>Warm<small>Soft around the edges</small></span></button><button class="voice" data-voice="pluck" aria-pressed="false"><span class="voice-icon pluck-icon" aria-hidden="true">⌁</span><span>Pluck<small>A little bit of spring</small></span></button></div></div>
+      <div class="control-panel timing"><p class="control-title">02 <span>GIVE IT A FEELING</span></p><div class="setting-row"><label for="scale">Scale</label><select id="scale"><option value="pentatonic">Pentatonic · open</option><option value="major">Major · bright</option><option value="minor">Minor · thoughtful</option></select></div><div class="setting-row tempo-row"><label for="tempo">Tempo</label><output id="tempo-value" for="tempo">84 <span>BPM</span></output></div><input type="range" id="tempo" min="45" max="160" step="1" value="84"><div class="range-ends"><span>A slow breath</span><span>A quicker step</span></div></div>
+      <div class="control-panel take"><p class="control-title">03 <span>KEEP A LITTLE SOMETHING</span></p><p class="take-copy">A sketch becomes a song<br>when you take it with you.</p><button class="download-button" id="download">Save a sound <span aria-hidden="true">↓</span></button><p class="export-note">Two loops · WAV audio · Made here</p></div>
+    </section>
+    <details class="accessible-notes"><summary>Prefer keys to drawing? Add a note <span aria-hidden="true">＋</span></summary><div class="note-builder"><label for="note-pitch">Pitch<select id="note-pitch"></select></label><label for="note-beat">Beat<select id="note-beat"><option value="0">1</option><option value="1">2</option><option value="2">3</option><option value="3">4</option><option value="4">5</option><option value="5">6</option><option value="6">7</option><option value="7">8</option></select></label><label for="note-length">Length<select id="note-length"><option value=".5">Half a beat</option><option value="1" selected>One beat</option><option value="2">Two beats</option></select></label><button class="download-button" id="add-note">Add to the loop <span aria-hidden="true">＋</span></button></div></details>
+    <footer><p>A small experiment in making something you can hear.<br><span>Drawn and played entirely on this computer.</span></p><div class="volume-control"><label for="volume">Volume</label><input type="range" id="volume" min="0" max="100" value="60"><output id="volume-value" for="volume">60%</output></div></footer>
+    <p class="notice" id="notice" role="status" aria-live="polite"></p>
+  </main>
+</body>
+</html>
