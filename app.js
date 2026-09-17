@@ -33,8 +33,36 @@
     if (history.length > 30) history.shift();
   }
 
+  // The sketch and its settings are kept in this browser only, so closing the tab does not lose them.
+  const storeKey = 'lilt.sketch.v1';
+  let saveTimer;
+  function saveSketch() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      const round = (n) => Math.round(n * 1e4) / 1e4;
+      const sketch = {v: 1, strokes: strokes.map((stroke) => stroke.points.map((p) => [round(p.x), round(p.y)])), scale: $('scale').value, tempo: Number($('tempo').value), volume: Number($('volume').value), voice: document.querySelector('[data-voice].selected')?.dataset.voice ?? 'glass'};
+      try {localStorage.setItem(storeKey, JSON.stringify(sketch));} catch {/* storage is full or unavailable; the page still works */}
+    }, 250);
+  }
+  function restoreSketch() {
+    let sketch;
+    try {sketch = JSON.parse(localStorage.getItem(storeKey) ?? 'null');} catch {return false;}
+    if (!sketch || sketch.v !== 1 || !Array.isArray(sketch.strokes)) return false;
+    const unit = (n) => Number.isFinite(n) && n >= 0 && n <= 1;
+    const lines = sketch.strokes.slice(0, maxStrokes).filter((points) => Array.isArray(points) && points.length >= 2 && points.length <= 1200 && points.every((p) => Array.isArray(p) && unit(p[0]) && unit(p[1])));
+    strokes = lines.map((points) => ({id: nextId++, points: points.map(([x, y]) => ({x, y}))}));
+    if ([...$('scale').options].some((o) => o.value === sketch.scale)) {$('scale').value = sketch.scale; $('scale').dispatchEvent(new Event('change'));}
+    for (const id of ['tempo', 'volume']) {
+      const value = Number(sketch[id]);
+      if (Number.isFinite(value) && value >= Number($(id).min) && value <= Number($(id).max)) {$(id).value = String(value); $(id).dispatchEvent(new Event('input'));}
+    }
+    document.querySelector(`[data-voice="${CSS.escape(String(sketch.voice))}"]`)?.click();
+    return true;
+  }
+
   function sync() {
     instrument.setStrokes(strokes);
+    saveSketch();
     $('stroke-count').textContent = `${strokes.length} / ${maxStrokes} LINES`;
     $('empty-state').hidden = strokes.length > 0 || draft !== null;
     $('undo').disabled = !history.length;
@@ -219,14 +247,16 @@
   document.querySelectorAll('[data-voice]').forEach((button) => button.addEventListener('click', () => {
     instrument.setVoice(button.dataset.voice);
     document.querySelectorAll('[data-voice]').forEach((b) => {b.classList.toggle('selected', b === button); b.setAttribute('aria-pressed', String(b === button));});
+    saveSketch();
   }));
-  $('scale').addEventListener('change', () => {instrument.setScale($('scale').value); rebuildPitchOptions(); render();});
+  $('scale').addEventListener('change', () => {instrument.setScale($('scale').value); rebuildPitchOptions(); render(); saveSketch();});
   $('tempo').addEventListener('input', () => {
     instrument.setTempo(Number($('tempo').value));
     $('tempo-value').replaceChildren(document.createTextNode(`${$('tempo').value} `), Object.assign(document.createElement('span'), {textContent: 'BPM'}));
     $('loop-length').textContent = `${instrument.duration.toFixed(1)} SECOND LOOP`;
+    saveSketch();
   });
-  $('volume').addEventListener('input', () => {instrument.setVolume(Number($('volume').value) / 100); $('volume-value').value = `${$('volume').value}%`;});
+  $('volume').addEventListener('input', () => {instrument.setVolume(Number($('volume').value) / 100); $('volume-value').value = `${$('volume').value}%`; saveSketch();});
   $('guide-toggle').addEventListener('click', () => {const show = $('guide').hidden; $('guide').hidden = !show; $('guide-toggle').setAttribute('aria-expanded', String(show));});
   $('add-note').addEventListener('click', () => {
     if (strokes.length >= maxStrokes) return;
@@ -260,7 +290,11 @@
     lastPhase = phase;
     frameId = requestAnimationFrame(animate);
   }
-  drawDemo(); rebuildPitchOptions(); sync();
+  rebuildPitchOptions();
+  const restored = restoreSketch();
+  if (!restored) drawDemo();
+  sync();
+  if (restored && strokes.length) notice('Your last sketch is back. Clear starts a fresh page.');
   new ResizeObserver(resize).observe($('drawing-area'));
   resize(); frameId = requestAnimationFrame(animate);
 })();

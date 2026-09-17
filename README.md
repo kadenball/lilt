@@ -6,7 +6,7 @@ Open `index.html` directly in a modern browser, or run `npm start` and open <htt
 
 Choose Glass, Warm, or Pluck, change the scale and tempo, and use **Save a sound** to export two loops as a WAV audio file. **Clear** starts a blank page; **Undo** restores your previous edit. **New melody** cycles through three starting sketches. Up to twelve lines can play together.
 
-The **Add a note** controls allow composition without drawing. When the canvas is focused, Space plays or pauses; Backspace undoes. Mouse, pen, and touch drawing are supported. Changing tabs pauses playback. Drawings live in the current page session, so save audio before closing it.
+The **Add a note** controls allow composition without drawing. When the canvas is focused, Space plays or pauses; Backspace undoes. Mouse, pen, and touch drawing are supported. Changing tabs pauses playback. Your sketch and its voice, scale, tempo and volume are kept in this browser's local storage and come back when you reopen the page; nothing is sent anywhere. **Clear** starts a fresh page. Save audio if you want to keep a sound outside this browser.
 
 Notes entered near the end of the loop stop at the loop boundary. A two-beat note starting on beat eight therefore lasts one beat.
 
